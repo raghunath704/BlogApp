@@ -16,6 +16,8 @@ public class User {
 
     @Indexed(unique = true) // Enforce unique username
     private String userName;
+    @Indexed(unique = true)
+    private String email;
 
     private String password;
 }
