@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,9 @@ public class BlogController {
 
     @PostMapping
     public ResponseEntity<Blog> createBlog(@RequestBody Blog blog) {
-        return ResponseEntity.ok(blogService.createBlog(blog));
+        blog.setCreatedAt(new Date()); // Automatically set the current date and time
+        Blog createdBlog = blogService.createBlog(blog);
+        return ResponseEntity.ok(createdBlog);
     }
 
 
