@@ -32,4 +32,11 @@ public class UserController {
     public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.getUserByUsername(username));
     }
+    // Get user by username
+    @DeleteMapping("/{Id}")
+    public ResponseEntity<Void> deleteByUserId(@PathVariable String Id) {
+        return ResponseEntity.ok(userService.deleteUserByUserId(Id));
+    }
+
+
 }
