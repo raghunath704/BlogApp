@@ -44,15 +44,11 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
             );
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
             // Extract username from Authentication
             String username = authentication.getName();
-
             // Generate JWT token
             String token = jwtUtil.generateToken(username);
-
             return ResponseEntity.ok(new LoginResponse("Login successful", token));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new LoginResponse("Invalid username or password", null));

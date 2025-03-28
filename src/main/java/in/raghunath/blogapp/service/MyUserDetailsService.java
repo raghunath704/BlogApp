@@ -1,28 +1,32 @@
 package in.raghunath.blogapp.service;
 
-import org.springframework.security.core.userdetails.User;
+import in.raghunath.blogapp.model.User; // Your MongoDB user model
+import in.raghunath.blogapp.repo.UserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException; // Alias for Spring Security's User
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 
+    @Autowired
+    private UserRepo userRepo;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // In a real app, query your database or external service
-        // Here, we just return a hard-coded user
-        if ("user".equals(username)) {
-            return User.builder()
-                    .username("user")
-                    .password("{noop}password") // {noop} means no password encoder
-                    .roles("USER")
-                    .build();
-        } else {
-            throw new UsernameNotFoundException("User not found: " + username);
-        }
+        // Fetch user from MongoDB
+        User appUser = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+        // Map your custom User model to Spring Security's UserDetails
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(appUser.getUsername())
+                .password(appUser.getPassword()) // Ensure the password is already encoded
+                .authorities(Collections.emptyList()) // Add roles/authorities if required
+                .build();
     }
 }
