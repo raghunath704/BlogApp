@@ -1,0 +1,54 @@
+package in.raghunath.blogapp.controller;
+
+import in.raghunath.blogapp.DTO.SignupRequest;
+import in.raghunath.blogapp.model.User;
+import in.raghunath.blogapp.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    // Create a new user (sign up)
+    @PostMapping
+    public ResponseEntity<Boolean> createUser(@RequestBody SignupRequest signupRequest) {
+        userService.registerUser(signupRequest);
+        return ResponseEntity.ok(true);
+    }
+
+    // Get all users
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    // Get user by username
+    @GetMapping("/{username}")
+    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
+        User user = userService.getUserByUsername(username);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(user);
+    }
+
+    // Delete user by ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteByUserId(@PathVariable String id) {
+        boolean deleted = userService.deleteUserByUserId(id);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+}
