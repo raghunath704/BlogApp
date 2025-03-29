@@ -2,6 +2,7 @@ package in.raghunath.blogapp.controller;
 
 import in.raghunath.blogapp.DTO.SignupRequest;
 import in.raghunath.blogapp.model.User;
+import in.raghunath.blogapp.service.AuthService;
 import in.raghunath.blogapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,13 +15,19 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+
+    private final  UserService userService;
+    private final AuthService authService;
+
+    public UserController(UserService userService, AuthService authService) {
+        this.userService = userService;
+        this.authService = authService;
+    }
 
     // Create a new user (sign up)
     @PostMapping
     public ResponseEntity<Boolean> createUser(@RequestBody SignupRequest signupRequest) {
-        userService.registerUser(signupRequest);
+        authService.registerUser(signupRequest);
         return ResponseEntity.ok(true);
     }
 

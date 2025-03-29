@@ -1,9 +1,11 @@
 package in.raghunath.blogapp.controller;
 
 
+import in.raghunath.blogapp.DTO.AuthResponse;
 import in.raghunath.blogapp.DTO.LoginRequest;
-import in.raghunath.blogapp.DTO.LoginResponse;
+import in.raghunath.blogapp.DTO.AuthResponse;
 import in.raghunath.blogapp.DTO.SignupRequest;
+import in.raghunath.blogapp.service.AuthService;
 import in.raghunath.blogapp.service.UserService;
 import in.raghunath.blogapp.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,41 +20,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private UserService userService;
+    private final AuthService authService;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequest signupRequest) {
-        boolean isRegistered = userService.registerUser(signupRequest);
-        if (isRegistered) {
-            return ResponseEntity.ok("User registered successfully!");
-        } else {
-            return ResponseEntity.badRequest().body("Username already exists!");
-        }
+    public ResponseEntity<AuthResponse> signup(@RequestBody SignupRequest signupRequest) {
+        return ResponseEntity.ok(authService.registerUser(signupRequest));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        try {
-            // Authenticate user
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            // Extract username from Authentication
-            String username = authentication.getName();
-            // Generate JWT token
-            String token = jwtUtil.generateToken(username);
-            return ResponseEntity.ok(new LoginResponse("Login successful", token));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new LoginResponse("Invalid username or password", null));
-        }
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(authService.loginUser(loginRequest));
     }
 
     @PostMapping("/logout")
