@@ -15,9 +15,12 @@ import java.util.List;
 @RequestMapping("/api/blogs")
 public class BlogController {
 
-    @Autowired
-    private BlogService blogService;
 
+    private final BlogService blogService;
+
+    public BlogController(BlogService blogService) {
+        this.blogService = blogService;
+    }
 
     @PostMapping
     public ResponseEntity<Blog> createBlog(@RequestBody Blog blog) {

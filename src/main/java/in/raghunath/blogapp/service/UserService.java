@@ -19,24 +19,6 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Register new users
-    public Boolean registerUser(SignupRequest signupRequest) {
-        if (userRepository.existsByUsername(signupRequest.getUsername())) {
-            return false; // Username already exists
-        }
-
-        User user = new User();
-        user.setUsername(signupRequest.getUsername());
-        user.setPassword(passwordEncoder.encode(signupRequest.getPassword())); // Encrypt password
-        user.setEmail(signupRequest.getEmail());
-        userRepository.save(user);
-
-        return true;
-    }
-
-
-
-
     // Retrieve all users
     public List<User> getAllUsers() {
         return userRepository.findAll();
