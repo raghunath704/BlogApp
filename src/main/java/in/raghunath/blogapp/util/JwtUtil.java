@@ -2,11 +2,9 @@ package in.raghunath.blogapp.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException; // Import specific exceptions
-import lombok.extern.slf4j.Slf4j; // Add logging
+import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-// Remove UserDetails import, validation logic can live elsewhere or be simplified
-// import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct; // For key initialization
@@ -16,7 +14,7 @@ import java.util.Date;
 import java.util.function.Function;
 
 @Component
-@Slf4j // Add SLF4J logging
+@Slf4j //SLF4J logging
 public class JwtUtil {
 
     @Value("${jwt.secret}")
