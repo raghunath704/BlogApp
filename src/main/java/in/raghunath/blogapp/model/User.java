@@ -1,4 +1,5 @@
 package in.raghunath.blogapp.model;
+import com.mongodb.lang.NonNull;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -18,10 +19,12 @@ public class User {
 
 
     @Indexed(unique = true) // Enforce unique username
+    @NonNull
     private String username;
 
     @Indexed(unique = true)
+    @NonNull
     private String email;
-
+    @NonNull
     private String password;
 }

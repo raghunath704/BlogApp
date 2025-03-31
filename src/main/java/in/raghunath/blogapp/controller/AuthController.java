@@ -9,6 +9,7 @@ import in.raghunath.blogapp.service.RefreshTokenService; // Import RefreshTokenS
 import in.raghunath.blogapp.util.JwtUtil; // Import JwtUtil
 import jakarta.servlet.http.Cookie; // Use jakarta imports for Spring Boot 3+
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value; // Import Value
 import org.springframework.http.HttpHeaders; // Import HttpHeaders
 import org.springframework.http.ResponseCookie; // Import ResponseCookie
@@ -37,7 +38,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> signup(@RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<AuthResponse> signup(@Valid @RequestBody SignupRequest signupRequest) {
         // Consider using try-catch for specific exceptions from AuthService
         try {
             AuthResponse response = authService.registerUser(signupRequest);
@@ -49,7 +50,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             AuthService.LoginResult loginResult = authService.loginUser(loginRequest);
 
