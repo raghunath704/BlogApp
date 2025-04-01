@@ -26,10 +26,10 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
 
-    @Value("${jwt.refresh-cookie-name}")
+    @Value("${app.jwt.refresh-cookie-name}")
     private String refreshTokenCookieName;
 
-    @Value("${jwt.refreshToken.expiration}")
+    @Value("${app.jwt.refreshToken.expiration}")
     private Long refreshTokenDurationMs;
 
     public AuthService(UserRepo userRepo,
