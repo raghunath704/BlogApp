@@ -14,16 +14,17 @@ import java.util.Date;
 import java.util.function.Function;
 
 @Component
-@Slf4j //SLF4J logging
+//logging
+@Slf4j
 public class JwtUtil {
 
     @Value("${jwt.secret}")
-    private String secret; // Keep this for Access Tokens
+    private String secret;
 
-    @Value("${jwt.expiration}") // This is now specifically for ACCESS token expiration
+    @Value("${jwt.accessToken.expiration}")
     private long accessTokenExpirationMs;
 
-    private Key signingKey; // Initialize once
+    private Key signingKey;
 
     @PostConstruct // Initialize the key after dependency injection
     public void init() {
@@ -32,12 +33,10 @@ public class JwtUtil {
             this.signingKey = Keys.hmacShaKeyFor(keyBytes);
         } catch (IllegalArgumentException e) {
             log.error("Invalid Base64 JWT secret key: {}", e.getMessage());
-            // Handle this critical error appropriately - maybe exit application?
             throw new RuntimeException("Invalid JWT secret key configuration.");
         }
     }
 
-    // No change needed for getSigningKey() if init() is used
     private Key getSigningKey() {
         return this.signingKey;
     }
@@ -95,20 +94,19 @@ public class JwtUtil {
         try {
             return extractClaim(token, Claims::getExpiration).before(new Date());
         } catch(ExpiredJwtException e) {
-            return true; // If parsing throws ExpiredJwtException, it is expired
+            // If parsing throws ExpiredJwtException, it is expired
+            return true;
         } catch (Exception e) {
-            // Handle other parsing errors if necessary, or let them propagate
             log.error("Could not determine token expiration", e);
-            return true; // Treat unparsable tokens as expired/invalid
+            // Treat unparsable tokens as expired/invalid
+            return true;
         }
     }
 
-    // Validate Access Token (No change needed conceptually)
+    // Validate Access Token
     public boolean validateAccessToken(String token, String username) {
         final String usernameFromToken = getUsernameFromToken(token);
         return (usernameFromToken.equals(username) && !isTokenExpired(token));
     }
 
-    // Removed the UserDetails version as username comparison is simpler here
-    // public boolean validateToken(String token, UserDetails user) { ... }
 }
