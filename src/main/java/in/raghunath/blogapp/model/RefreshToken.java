@@ -17,15 +17,13 @@ import java.time.Instant;
 public class RefreshToken {
 
     @Id
-    private String id; // MongoDB uses String for _id
+    private String id;
 
-    // It's better to index the token itself for quick lookups
     @Indexed(unique = true)
-    @Field("token") // Explicitly map field name
-    private String token; // The actual opaque refresh token value
+    @Field("token")
+    private String token;
 
-    // Link back to the user
-    @Indexed // Index for potential lookups by username
+    @Indexed
     @Field("username")
     private String username;
 

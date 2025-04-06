@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class UserController {
 
 
@@ -51,6 +50,7 @@ public class UserController {
     }
 
     // Delete user by ID
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteByUserId(@PathVariable String id) {
         boolean deleted = userService.deleteUserByUserId(id);
