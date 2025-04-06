@@ -1,5 +1,6 @@
 package in.raghunath.blogapp.model;
-import com.mongodb.lang.NonNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -9,22 +10,29 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "users") // Use the collection name as "users"
+@Document(collection = "users")
 public class User {
     @Id
     private String id;
 
-
-    @Indexed(unique = true) // Enforce unique username
-    @NonNull
+    @Indexed(unique = true)
+    @NotBlank
     private String username;
 
     @Indexed(unique = true)
-    @NonNull
+    @NotBlank
+    @Email
     private String email;
-    @NonNull
+
+    @NotBlank
+    @JsonIgnore
     private String password;
+
+    private Set<Role> roles = new HashSet<>();
 }

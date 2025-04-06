@@ -18,8 +18,7 @@ public class Blog {
     @Id
     private String id;
 
-    public String authorId;
-
+    private String authorUsername;
     private String topic;
 
     private String title;

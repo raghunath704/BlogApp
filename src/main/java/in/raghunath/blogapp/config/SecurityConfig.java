@@ -1,10 +1,13 @@
 package in.raghunath.blogapp.config;
 
 import in.raghunath.blogapp.filter.JwtAuthenticationFilter;
+import in.raghunath.blogapp.model.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService; // Remains the same
@@ -32,29 +36,27 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for stateless API (ensure other protections if needed)
                 .authorizeHttpRequests(auth -> auth
-                        // Allow public access to auth endpoints
-                        .requestMatchers("/auth/signup", "/auth/login", "/auth/refresh", "/auth/logout").permitAll()
-                        // Secure all other endpoints - requires a valid Access Token
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/blogs", "/api/blogs/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/blogs").hasAuthority(Role.ROLE_USER.name())
+                        .requestMatchers(HttpMethod.PUT, "/api/blogs/**").authenticated() // Allow if logged in
+                        .requestMatchers(HttpMethod.DELETE, "/api/blogs/**").authenticated() // Allow if logged in
+                        .requestMatchers("/api/**").hasAuthority(Role.ROLE_ADMIN.name())
                         .anyRequest().authenticated()
                 )
-                // No need to explicitly set userDetailsService here if AuthenticationManager is configured correctly
-                // .userDetailsService(userDetailsService)
                 .sessionManagement(session -> session
-                        // Ensure stateless sessions - VERY IMPORTANT
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // Add your JWT filter to validate Access Tokens before the standard auth filters
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Good choice
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        // Standard way to get the AuthenticationManager bean
         return authenticationConfiguration.getAuthenticationManager();
     }
 }

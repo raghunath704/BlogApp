@@ -4,6 +4,7 @@ import in.raghunath.blogapp.DTO.AuthResponse;
 import in.raghunath.blogapp.DTO.LoginRequest;
 import in.raghunath.blogapp.DTO.SignupRequest;
 import in.raghunath.blogapp.model.RefreshToken; // Import RefreshToken
+import in.raghunath.blogapp.model.Role;
 import in.raghunath.blogapp.model.User;
 import in.raghunath.blogapp.repo.UserRepo;
 import in.raghunath.blogapp.util.JwtUtil;
@@ -16,6 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder; // Impor
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; // Optional: for signup atomicity
+
+import java.util.Set;
 
 @Service
 public class AuthService {
@@ -57,6 +60,7 @@ public class AuthService {
         user.setUsername(signupRequest.getUsername());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user.setEmail(signupRequest.getEmail());
+        user.setRoles(Set.of(Role.ROLE_USER));
         userRepo.save(user);
         return new AuthResponse("Registration successful. Please login.", null);
     }

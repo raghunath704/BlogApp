@@ -5,7 +5,9 @@ import in.raghunath.blogapp.model.User;
 import in.raghunath.blogapp.service.BlogService;
 import in.raghunath.blogapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -23,10 +25,10 @@ public class BlogController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<Blog> createBlog(@RequestBody Blog blog) {
-        blog.setCreatedAt(new Date()); // Automatically set the current date and time
         Blog createdBlog = blogService.createBlog(blog);
-        return ResponseEntity.ok(createdBlog);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdBlog);
     }
 
 
@@ -35,10 +37,25 @@ public class BlogController {
         return ResponseEntity.ok(blogService.getAllBlogs());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Blog> getBlogById(@PathVariable String id) {
+        Blog blog = blogService.getBlogById(id);
+        return ResponseEntity.ok(blog);
+    }
 
-    @DeleteMapping("/{Id}")
-    public ResponseEntity<Void> deleteBlogById(@PathVariable String Id) {
-        return ResponseEntity.ok(blogService.deleteBlogById(Id));
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @blogSecurityService.isOwner(#id, authentication.principal.username)")
+    public ResponseEntity<Blog> updateBlog(@PathVariable String id, @RequestBody Blog blogDetails) {
+        Blog updatedBlog = blogService.updateBlog(id, blogDetails);
+        return ResponseEntity.ok(updatedBlog);
+    }
+
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @blogSecurityService.isOwner(#id, authentication.principal.username)")
+    public ResponseEntity<Void> deleteBlogById(@PathVariable String id) {
+        blogService.deleteBlogById(id);
+        return ResponseEntity.noContent().build(); // Return 204 No Content
     }
 
 

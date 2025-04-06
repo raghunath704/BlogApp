@@ -32,7 +32,6 @@ public class UserService {
 
     public Boolean deleteUserByUserId(String id) {
         userRepository.deleteById(id);
-        if(userRepository.existsById(id)) return false;
-        return true;
+        return !userRepository.existsById(id);
     }
 }
