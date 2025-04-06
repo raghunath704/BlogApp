@@ -41,7 +41,8 @@ public class BlogService {
             throw new IllegalStateException("User must be authenticated to create a blog.");
         }
         blog.setAuthorUsername(currentPrincipalName);
-        blog.setCreatedAt(new Date()); // Keep this or set in controller
+        blog.setCreatedAt(new Date());
+        blog.setUpdatedAt(new Date());
 
         return blogRepo.save(blog);
 
@@ -63,6 +64,7 @@ public class BlogService {
         existingBlog.setSubtitle(blogDetails.getSubtitle());
         existingBlog.setContent(blogDetails.getContent());
         existingBlog.setTopic(blogDetails.getTopic());
+        existingBlog.setUpdatedAt(new Date());
         return blogRepo.save(existingBlog);
     }
 

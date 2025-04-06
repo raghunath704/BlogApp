@@ -38,7 +38,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/blogs", "/api/blogs/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/blogs").hasAuthority(Role.ROLE_USER.name())
+                        .requestMatchers(HttpMethod.POST, "/api/blogs")
+                        .hasAnyAuthority(Role.ROLE_USER.name(),Role.ROLE_ADMIN.name())
                         .requestMatchers(HttpMethod.PUT, "/api/blogs/**").authenticated() // Allow if logged in
                         .requestMatchers(HttpMethod.DELETE, "/api/blogs/**").authenticated() // Allow if logged in
                         .requestMatchers("/api/**").hasAuthority(Role.ROLE_ADMIN.name())
