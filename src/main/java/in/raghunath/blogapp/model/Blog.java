@@ -1,13 +1,10 @@
 package in.raghunath.blogapp.model;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.repository.Update;
 
 import java.util.Date;
 
@@ -26,8 +23,7 @@ public class Blog {
 
     private String subtitle;
     private String content;
-
-
+    private Boolean isPublished=false;
     @CreatedDate
     private Date createdAt;
     @CreatedDate

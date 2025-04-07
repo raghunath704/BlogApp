@@ -43,6 +43,7 @@ public class BlogService {
         blog.setAuthorUsername(currentPrincipalName);
         blog.setCreatedAt(new Date());
         blog.setUpdatedAt(new Date());
+        blog.setIsPublished(true);
 
         return blogRepo.save(blog);
 
@@ -50,6 +51,10 @@ public class BlogService {
 
     public List<Blog> getAllBlogs() {
         return blogRepo.findAll();
+    }
+
+    public List<Blog> getAllPublishedBlogs(){
+        return blogRepo.findByIsPublishedTrue();
     }
 
     public Blog getBlogById(String id) {
@@ -66,6 +71,12 @@ public class BlogService {
         existingBlog.setTopic(blogDetails.getTopic());
         existingBlog.setUpdatedAt(new Date());
         return blogRepo.save(existingBlog);
+    }
+
+    public void togglePublishStatus(String id){
+        Blog existingBlog=getBlogById(id);
+        existingBlog.setIsPublished(!existingBlog.getIsPublished());
+        blogRepo.save(existingBlog);
     }
 
     public void deleteBlogById(String id) {
