@@ -1,5 +1,6 @@
 package in.raghunath.blogapp.controller;
 
+import in.raghunath.blogapp.DTO.ApiResponse;
 import in.raghunath.blogapp.model.Blog;
 import in.raghunath.blogapp.model.User;
 import in.raghunath.blogapp.repo.BlogRepo;
@@ -56,10 +57,14 @@ public class BlogController {
         return ResponseEntity.ok(updatedBlog);
     }
     @PutMapping("/toggleStatus/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @blogSecurityService.isOwner(#id, authentication.principal.username)")
-    public ResponseEntity<Void> togglePublishStatus(@PathVariable String id){
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @blogSecurityService.isOwner(#id, principal.username)")
+    public ResponseEntity<ApiResponse> togglePublishStatus(@PathVariable String id) {
         blogService.togglePublishStatus(id);
-        return ResponseEntity.ok(null);
+        String finalStatus = blogService.isPublished(id) ? "PUBLISHED" : "UNPUBLISHED";
+        String successMessage = "Blog status successfully toggled to " + finalStatus + ".";
+        ApiResponse response = new ApiResponse(true, successMessage);
+
+        return ResponseEntity.ok(response); // Return 200 OK with ApiResponse body
     }
 
 

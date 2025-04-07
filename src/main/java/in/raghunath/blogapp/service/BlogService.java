@@ -79,6 +79,11 @@ public class BlogService {
         blogRepo.save(existingBlog);
     }
 
+    public boolean isPublished(String id){
+        Blog blog=getBlogById(id);
+        return blog.getIsPublished();
+    }
+
     public void deleteBlogById(String id) {
         if(!blogRepo.existsById(id)){
             throw new ResourceNotFoundException("Blog not found with id: "+ id);
