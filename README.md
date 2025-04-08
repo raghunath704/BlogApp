@@ -1,38 +1,58 @@
-# Spring Boot Blog Application
+# BlogApp
 
-## Overview
-This project is a **Blog Application** built using **Spring Boot** and integrated with **MongoDB Atlas** as the cloud storage database. The application provides a platform to manage and interact with blog posts, supporting basic CRUD operations.
-
----
+A secure blog application built with **Spring Boot** and **MongoDB**, featuring user authentication via **JWT**, role-based access control, and RESTful APIs.
 
 ## Features
-- User-friendly interface for managing blog posts.
-- Create, read, update, and delete (CRUD) blog posts.
-- Search for blog posts based on title or content.
-- Store and retrieve blog data using MongoDB Atlas.
-- RESTful API design for seamless integration with frontends or external systems.
 
----
+- User Signup, Login, and Logout
+- JWT-based Authentication (Access & Refresh Tokens)
+- Role-Based Authorization (Admin, User, etc.)
+- Blog CRUD operations
+- MongoDB integration with Spring Data
+- Secure API endpoints with Spring Security
+- Validation and error handling
 
-## Technologies Used
-- **Spring Boot**: Backend framework for rapid application development.
-- **MongoDB Atlas**: Cloud NoSQL database for scalable and reliable data storage.
-- **Maven**: Build and dependency management tool.
-- **Lombok**: Simplifies Java code with annotations.
-- **Swagger/OpenAPI**: API documentation and testing.
+## Tech Stack
 
----
+- Java 21
+- Spring Boot 3.4.4
+- Spring Security
+- Spring Data MongoDB
+- JSON Web Token (JJWT)
+- Lombok
+- Maven
 
-## Prerequisites
-- **Java 17 or higher** installed.
-- **Maven** installed.
-- A **MongoDB Atlas account** with a configured cluster.
+## API Endpoints
 
----
+| Method | Endpoint        | Description              | Access        |
+|--------|-----------------|--------------------------|---------------|
+| POST   | `/auth/signup`  | Register a new user      | Public        |
+| POST   | `/auth/login`   | Login and get JWT tokens | Public        |
+| POST   | `/auth/refresh` | Get new access token     | Public        |
+| GET    | `/blogs`        | View all blogs           | Public        |
+| GET    | `/blogs/{id}`   | View a blog by ID        | Public        |
+| POST   | `/blogs`        | Create a new blog        | Authenticated |
+| PUT    | `/blogs/{id}`   | Update a blog            | Author/Admin  |
+| DELETE | `/blogs/{id}`   | Delete a blog            | Author/Admin  |
 
-## Setup Instructions
 
-### Step 1: Clone the Repository
-```bash
-git clone https://github.com/raghunath704/BlogApp.git
-cd BlogApp
+## Getting Started
+
+### Prerequisites
+
+- Java 21+
+- Maven
+- MongoDB Atlas or Local MongoDB instance
+
+### Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/raghunath704/BlogApp.git
+   cd BlogApp
+### Configure MongoDB
+
+Set your MongoDB URI in `application.properties`:
+
+```properties
+spring.data.mongodb.uri=mongodb+srv://<username>:<password>@<cluster-url>/<database>?retryWrites=true&w=majority
