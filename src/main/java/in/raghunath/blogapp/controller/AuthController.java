@@ -1,4 +1,5 @@
 package in.raghunath.blogapp.controller;
+import in.raghunath.blogapp.DTO.ApiResponse;
 import in.raghunath.blogapp.DTO.AuthResponse;
 import in.raghunath.blogapp.DTO.LoginRequest;
 import in.raghunath.blogapp.DTO.SignupRequest;
@@ -53,15 +54,11 @@ public class AuthController {
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             AuthService.LoginResult loginResult = authService.loginUser(loginRequest);
-
-            // Set the HttpOnly cookie in the response header
-            // Return the Access Token in the response body
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, loginResult.cookie().toString())
                     .body(loginResult.authResponse());
-        } catch (Exception ex) { // Catch specific auth exceptions if needed
-            // Log the exception
-            return ResponseEntity.status(401).body(new AuthResponse("Login failed: " + ex.getMessage(), null));
+        } catch (Exception ex) {
+            return ResponseEntity.status(401).body(new ApiResponse(false,"Login failed: " + ex.getMessage()));
         }
     }
 
@@ -86,7 +83,7 @@ public class AuthController {
         // 4. Return response with the clearing cookie
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, clearCookie.toString())
-                .body(new AuthResponse("Logout successful!", null)); // Use AuthResponse for consistency
+                .body(new ApiResponse(true,"Logout successful!")); // Use AuthResponse for consistency
     }
 
     // --- NEW REFRESH TOKEN ENDPOINT ---

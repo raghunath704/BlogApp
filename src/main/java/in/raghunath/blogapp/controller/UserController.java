@@ -1,5 +1,6 @@
 package in.raghunath.blogapp.controller;
 
+import in.raghunath.blogapp.DTO.ApiResponse;
 import in.raghunath.blogapp.DTO.SignupRequest;
 import in.raghunath.blogapp.model.User;
 import in.raghunath.blogapp.service.AuthService;
@@ -33,6 +34,7 @@ public class UserController {
     }
 
     // Get all users
+
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
@@ -51,13 +53,4 @@ public class UserController {
 
     // Delete user by ID
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteByUserId(@PathVariable String id) {
-        boolean deleted = userService.deleteUserByUserId(id);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
 }
