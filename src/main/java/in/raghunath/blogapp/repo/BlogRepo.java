@@ -9,9 +9,9 @@ import java.util.Optional;
 
 @Repository
 public interface BlogRepo extends MongoRepository<Blog,String> {
-
     List<Blog> findByIsPublishedTrue();
-
-    // Optional but good: Find published blog by ID
     Optional<Blog> findByIdAndIsPublishedTrue(String id);
+    List<Blog> findByIsPublishedFalse();
+    List<Blog> findByAuthorUsernameAndIsPublishedTrue(String username);
+    List<Blog> findByAuthorUsernameAndIsPublishedFalse(String username);
 }

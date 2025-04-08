@@ -24,27 +24,26 @@ public class BlogService {
     @Autowired
     BlogRepo blogRepo;
 
+    private String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new IllegalStateException("User must be authenticated for this operation.");
+        }
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        } else {
+            return principal.toString();
+        }
+    }
+
     @Transactional
     public Blog createBlog(Blog blog){
-        Authentication authentication= SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-        String currentPrincipalName = "anonymousUser"; // Default or throw if auth is null?
-        if(authentication!=null && authentication.isAuthenticated()){
-            if (authentication.getPrincipal() instanceof UserDetails) {
-                currentPrincipalName =
-                        ((UserDetails) authentication.getPrincipal())
-                        .getUsername();
-            } else currentPrincipalName = authentication.getName();
-        }
-        else {
-            throw new IllegalStateException("User must be authenticated to create a blog.");
-        }
+        String currentPrincipalName = getCurrentUsername();
         blog.setAuthorUsername(currentPrincipalName);
         blog.setCreatedAt(new Date());
         blog.setUpdatedAt(new Date());
         blog.setIsPublished(true);
-
         return blogRepo.save(blog);
 
     }
@@ -55,6 +54,10 @@ public class BlogService {
 
     public List<Blog> getAllPublishedBlogs(){
         return blogRepo.findByIsPublishedTrue();
+    }
+
+    public List<Blog> findBlogsByUsername(String username){
+        return blogRepo.findByAuthorUsernameAndIsPublishedTrue(username);
     }
 
     public Blog getBlogById(String id) {
@@ -82,6 +85,14 @@ public class BlogService {
     public boolean isPublished(String id){
         Blog blog=getBlogById(id);
         return blog.getIsPublished();
+    }
+    public List<Blog> getMyUnpublishedBlogs() {
+        String currentUsername = getCurrentUsername();
+        return blogRepo.findByAuthorUsernameAndIsPublishedFalse(currentUsername);
+    }
+    public List<Blog> getAllUnpublishedBlogsForAdmin() {
+        // Security check (role) should ideally be done at Controller level with @PreAuthorize
+        return blogRepo.findByIsPublishedFalse();
     }
 
     public void deleteBlogById(String id) {

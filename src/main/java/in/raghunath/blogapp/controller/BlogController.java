@@ -38,6 +38,26 @@ public class BlogController {
     public ResponseEntity<List<Blog>> getAllBlogs(){
         return ResponseEntity.ok(blogService.getAllBlogs());
     }
+    @GetMapping("/unpublished/all")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<List<Blog>> getAllUnpublishedBlogs() {
+        List<Blog> unpublishedBlogs = blogService.getAllUnpublishedBlogsForAdmin();
+        return ResponseEntity.ok(unpublishedBlogs);
+    }
+
+    @GetMapping("/unpublished/my")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<Blog>> getMyUnpublishedBlogs() {
+        List<Blog> myUnpublishedBlogs = blogService.getMyUnpublishedBlogs();
+        return ResponseEntity.ok(myUnpublishedBlogs);
+    }
+
+
+    @GetMapping("/user/{username}")
+    public ResponseEntity<List<Blog>> getAllPublishedBlogsByUsername(@PathVariable String username){ // Use @PathVariable
+        List<Blog> blogs = blogService.findBlogsByUsername(username);
+        return ResponseEntity.ok(blogs);
+    }
 
     @GetMapping
     public ResponseEntity<List<Blog>> getAllPublishedBlogs() {
