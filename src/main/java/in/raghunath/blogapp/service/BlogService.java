@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -60,10 +61,25 @@ public class BlogService {
         return blogRepo.findByAuthorUsernameAndIsPublishedTrue(username);
     }
 
+    public List<Blog> findPublishedBlogsByTopic(String topic){
+        if(topic==null || topic.trim().isEmpty()){
+            return Collections.emptyList();
+        }
+        return blogRepo.findByTopicIgnoreCaseAndIsPublishedTrue(topic.trim());
+    }
+
     public Blog getBlogById(String id) {
         return blogRepo.findById(id)
                 .orElseThrow(() -> new
                         ResourceNotFoundException("Blog not found with id: " + id)); // Use a custom exception
+    }
+
+    public List<Blog> searchPublishedBlogs(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
+        String trimmedQuery = query.trim();
+        return blogRepo.searchPublishedBlogs(trimmedQuery);
     }
 
     public Blog updateBlog(String id, Blog blogDetails){

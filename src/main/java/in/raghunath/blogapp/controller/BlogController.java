@@ -63,6 +63,17 @@ public class BlogController {
     public ResponseEntity<List<Blog>> getAllPublishedBlogs() {
         return ResponseEntity.ok(blogService.getAllPublishedBlogs());
     }
+    @GetMapping("/topic/{topic}")
+    public ResponseEntity<List<Blog>> getPublishedBlogsByTopic(@PathVariable String topic){
+        List<Blog> blogs=blogService.findPublishedBlogsByTopic(topic);
+        return ResponseEntity.ok(blogs);
+    }
+
+    @GetMapping(params = "search")
+    public ResponseEntity<List<Blog>> searchPublishedBlogs(@RequestParam("search") String searchQuery) {
+        List<Blog> blogs = blogService.searchPublishedBlogs(searchQuery);
+        return ResponseEntity.ok(blogs);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Blog> getBlogById(@PathVariable String id) {
