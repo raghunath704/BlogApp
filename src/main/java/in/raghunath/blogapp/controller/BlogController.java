@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/blogs")
 public class BlogController {
 
 
@@ -26,26 +25,26 @@ public class BlogController {
         this.blogService = blogService;
     }
 
-    @PostMapping
+    @PostMapping("/api/blogs")
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<Blog> createBlog(@RequestBody Blog blog) {
         Blog createdBlog = blogService.createBlog(blog);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBlog);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/api/blogs/all")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<Blog>> getAllBlogs(){
         return ResponseEntity.ok(blogService.getAllBlogs());
     }
-    @GetMapping("/unpublished/all")
+    @GetMapping("/api/blogs/unpublished/all")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<Blog>> getAllUnpublishedBlogs() {
         List<Blog> unpublishedBlogs = blogService.getAllUnpublishedBlogsForAdmin();
         return ResponseEntity.ok(unpublishedBlogs);
     }
 
-    @GetMapping("/unpublished/my")
+    @GetMapping("/api/blogs/unpublished/my")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<Blog>> getMyUnpublishedBlogs() {
         List<Blog> myUnpublishedBlogs = blogService.getMyUnpublishedBlogs();
@@ -53,41 +52,41 @@ public class BlogController {
     }
 
 
-    @GetMapping("/user/{username}")
+    @GetMapping("/api/blogs/user/{username}")
     public ResponseEntity<List<Blog>> getAllPublishedBlogsByUsername(@PathVariable String username){ // Use @PathVariable
         List<Blog> blogs = blogService.findBlogsByUsername(username);
         return ResponseEntity.ok(blogs);
     }
 
-    @GetMapping
+    @GetMapping("/api/blogs")
     public ResponseEntity<List<Blog>> getAllPublishedBlogs() {
         return ResponseEntity.ok(blogService.getAllPublishedBlogs());
     }
-    @GetMapping("/topic/{topic}")
+    @GetMapping("/api/blogs/topic/{topic}")
     public ResponseEntity<List<Blog>> getPublishedBlogsByTopic(@PathVariable String topic){
         List<Blog> blogs=blogService.findPublishedBlogsByTopic(topic);
         return ResponseEntity.ok(blogs);
     }
 
-    @GetMapping(params = "search")
+    @GetMapping(value = "/api/blogs/search",params = "search")
     public ResponseEntity<List<Blog>> searchPublishedBlogs(@RequestParam("search") String searchQuery) {
         List<Blog> blogs = blogService.searchPublishedBlogs(searchQuery);
         return ResponseEntity.ok(blogs);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/blogs/{id}")
     public ResponseEntity<Blog> getBlogById(@PathVariable String id) {
         Blog blog = blogService.getBlogById(id);
         return ResponseEntity.ok(blog);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/api/blogs/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or @blogSecurityService.isOwner(#id, authentication.principal.username)")
     public ResponseEntity<Blog> updateBlog(@PathVariable String id, @RequestBody Blog blogDetails) {
         Blog updatedBlog = blogService.updateBlog(id, blogDetails);
         return ResponseEntity.ok(updatedBlog);
     }
-    @PutMapping("/toggleStatus/{id}")
+    @PutMapping("/api/blogs/toggleStatus/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or @blogSecurityService.isOwner(#id, principal.username)")
     public ResponseEntity<ApiResponse> togglePublishStatus(@PathVariable String id) {
         blogService.togglePublishStatus(id);
@@ -99,7 +98,7 @@ public class BlogController {
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/blogs/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or @blogSecurityService.isOwner(#id, authentication.principal.username)")
     public ResponseEntity<Void> deleteBlogById(@PathVariable String id) {
         blogService.deleteBlogById(id);
