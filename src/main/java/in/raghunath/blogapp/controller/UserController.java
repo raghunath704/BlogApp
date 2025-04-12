@@ -52,5 +52,11 @@ public class UserController {
     }
 
     // Delete user by ID
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @userSecurityService.isSelf(#id, authentication.principal.username)")
+    public ResponseEntity<Void> deleteUserById(@PathVariable String id) {
+        userService.deleteUserById(id);
+        return ResponseEntity.noContent().build(); // Return 204 No Content
+    }
 
 }

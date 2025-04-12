@@ -2,6 +2,7 @@ package in.raghunath.blogapp.exception; // Or a suitable package
 
 import in.raghunath.blogapp.DTO.ApiResponse;
 import in.raghunath.blogapp.service.BlogService.ResourceNotFoundException; // Make sure this is accessible
+import in.raghunath.blogapp.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         log.warn("Resource not found: {}", ex.getMessage());
+        ApiResponse response = new ApiResponse(false, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserService.UserNotFoundException.class)
+    public ResponseEntity<ApiResponse> handleUserNotFoundException(UserService.UserNotFoundException ex, WebRequest request) {
+        log.warn("User not found: {}", ex.getMessage());
         ApiResponse response = new ApiResponse(false, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }

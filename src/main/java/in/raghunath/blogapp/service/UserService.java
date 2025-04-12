@@ -46,4 +46,19 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
+    public void deleteUserById(String id) {
+        if(!userRepository.existsById(id)){
+            throw new UserNotFoundException("User not found with id: "+ id);
+        }
+        userRepository.deleteById(id);
+    }
+
+
+
+    public static class UserNotFoundException extends RuntimeException {
+        public UserNotFoundException(String message) {
+            super(message);
+        }
+    }
+
 }

@@ -23,8 +23,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final UserDetailsService userDetailsService; // Remains the same
-    private final JwtAuthenticationFilter jwtAuthenticationFilter; // Remains the same
+    private final UserDetailsService userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
@@ -34,12 +34,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for stateless API (ensure other protections if needed)
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for stateless API
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/blogs", "/api/blogs/**","/api/users", "/api/users/**" ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/blogs")
-                        .hasAnyAuthority(Role.ROLE_USER.name(),Role.ROLE_ADMIN.name())
+                        .hasAnyAuthority(Role.ROLE_USER.name(), Role.ROLE_ADMIN.name())
                         .requestMatchers(HttpMethod.PUT, "/api/blogs/**","/api/users/**").authenticated() // Allow if logged in
                         .requestMatchers(HttpMethod.DELETE, "/api/blogs/**").authenticated() // Allow if logged in
                         .requestMatchers("/api/**").hasAuthority(Role.ROLE_ADMIN.name())
