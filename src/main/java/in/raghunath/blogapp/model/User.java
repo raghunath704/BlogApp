@@ -3,6 +3,7 @@ package in.raghunath.blogapp.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,11 @@ public class User {
     @NotBlank
     @JsonIgnore
     private String password;
+
+
+    private String profilePhotoUrl;
+
+    private String profilePhotoPublicId; // Store this for deletion/updates
 
     private Set<Role> roles = new HashSet<>();
 }

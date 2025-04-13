@@ -109,6 +109,18 @@
 			<version>2.8.5</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.cloudinary</groupId>
+			<artifactId>cloudinary-http44</artifactId>
+			<version>1.38.0</version> <!-- Use the latest version -->
+		</dependency>
+
+		<dependency> <!-- Optional, but useful for JSON handling if needed -->
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20231013</version>
+		</dependency>
+
 
 	</dependencies>
 

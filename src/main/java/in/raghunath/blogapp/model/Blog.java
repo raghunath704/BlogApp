@@ -28,4 +28,8 @@ public class Blog {
     private Date createdAt;
     @CreatedDate
     private Date updatedAt;
+
+    private String imageUrl;
+
+    private String imagePublicId;
 }
